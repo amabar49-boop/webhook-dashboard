@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Webhook</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      background: #f7f7f7;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+    th {
+      background: #eee;
+    }
+    tr:nth-child(even) {
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <h1>📬 Dashboard Webhook</h1>
+  <p>Menampilkan 50 data webhook terbaru.</p>
+
+  <table id="logTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>IP</th>
+        <th>Body</th>
+        <th>Waktu</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadLogs() {
+      const res = await fetch('/api/logs');
+      const data = await res.json();
+      const tbody = document.querySelector('tbody');
+      tbody.innerHTML = '';
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${row.id}</td>
+          <td>${row.ip}</td>
+          <td><pre>${row.body}</pre></td>
+          <td>${row.created_at}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    loadLogs();
+    setInterval(loadLogs, 5000); // refresh setiap 5 detik
+  </script>
+</body>
+</html>
